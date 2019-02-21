@@ -1,0 +1,37 @@
+{
+        "AWSEBDockerrunVerion":2,
+        "containerDefinitions":[
+            {
+                "name":"client",
+                "image":"eumb602/multi-client",
+                "hostname":"client",
+                "essential":false
+            },
+            {
+                "name":"server",
+                "image":"eumb602/multi-server",
+                "hostname":"api",
+                "essential":false
+            },
+            {
+                "name":"worker",
+                "image":"eumb602/multi-worker",
+                "hostname":"worker",
+                "essential":false
+            },
+            {
+                "name":"nginx",
+                "image":"eumb602/multi-nginx",
+                "hostname":"nginx",
+                "essential":true,
+                "portMappings":[
+                    {
+                        "hostPort":80,
+                        "containerPort":80
+                    }
+                ],
+                "links":["client","server"]
+            }
+
+        ]
+}

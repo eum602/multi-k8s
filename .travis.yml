@@ -20,3 +20,16 @@ after_success:
   - docker push eumb602/multi-nginx
   - docker push eumb602/multi-server
   - docker push eumb602/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-1
+  app: multi-docker
+  env: MultiDocker-env
+  bucket-name: elasticbeanstalk-us-west-1-488754487905
+  bucket-path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
