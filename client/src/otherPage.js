@@ -5,7 +5,7 @@ export default () => {
     return(
         <div>
             In some page!
-            <Link to="/">Go back home</Link>
+            <Link to="/">Go back to home</Link>
         </div>
-    )    
+    )  
 }

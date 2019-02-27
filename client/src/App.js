@@ -15,11 +15,11 @@ class App extends Component {
             <img src={logo} className="App-logo" alt="logo" />
             <h1 className="App-title">Fib calculator</h1>            
             <Link to="/">Home</Link>
-            <Link to="/otherPage">Other Page</Link>
+            <Link to="/otherpage">Other Page</Link>
           </header>
           <div>
             <Route exact path="/" component = {Fib}/>
-            <Route path="/otherPage" component={otherPage}/>
+            <Route path="/otherpage" component={otherPage}/>
           </div>
         </div>
       </Router>
