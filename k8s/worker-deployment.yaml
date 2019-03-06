@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 1 #actually this is the most critical part so it should really have more than 1.
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: eumb602/multi-worker #stephengrider/multi-worker
+          env: #setting the necessary environment variables
+            - name: REDIS_HOST #refers to the name of the environment variable.
+              value: redis-cluster-ip-service #cluster associated to the pod that host the redis container
+            - name: REDIS_PORT
+              value: '6379' #port defined in redis-cluster-ip.yaml; I think it is a targetPort.
+                            #the environment variables must be strings
