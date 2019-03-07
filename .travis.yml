@@ -1,0 +1,22 @@
+sudo: required #because we are making use of docker
+services:
+  - docker: #docker service must be pre installed as soon as we try to run our build.
+            #because we definitely need travis to build our images and even run test container.
+before_install:
+  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null; #this download google cloud sdk and then install it locally
+                                                          #on a little instance that is assigned to us by travis.CI
+  - source $HOME/google-cloud-sdk/path.bash.inc #this looks at the default install directory(HOME/google-cloud-sdk)
+                                                #and the is going to source the file(path.bash.inc), this means
+                                                #essentially that just means that there is some configuration
+                                                #that is going to modify our shell inside of travisCI inside 
+                                                #the file(path.bash.inc) and then we are going to apply that 
+                                                #additional configuration through the source command.
+  - gcloud components update kubectl #now making sure that the google cloud or the CLI has also installed the kubectl command.
+                                      #so this command is updating or installing the kubectl command
+  - gcloud auth activate-service-account --key-file service-account.json #similar when we created an IAM user
+      #in AWS and we assigned it some number of permissions that essentially allow that kind of user that we made use of 
+      #travisCI to actually access or copy to elastic beanstalk and do a deployment at some point. In the 
+      #same wway "activate-service-account" is essentially equivalent to that entirely IAM system; so in order to
+      #tell google cloud who we are and give it access to our account then we have to activate a service-account
+      #and then provide a set of credentialsinside of a file that we are calling  "service-account.json"
