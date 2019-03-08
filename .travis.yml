@@ -48,7 +48,7 @@ before_install:
         #-t eumb602/rect-test is a termporary tag to identify the image we are cereating
         #./client is the build context.
 script:
-  - docker run eumb602/react-test npm run test -- --coverage #running our test image
+  - docker run eumb602/react-test npm test -- --coverage #running our test image
 
 deploy: #travis does not have similar built-in provider for deploying code off to a kubernetes cluster . 
         #If we want to deploy to kubernetes we have to put together our own custom series of commands and tell
