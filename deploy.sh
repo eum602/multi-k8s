@@ -23,11 +23,11 @@ docker push eumb602/multi-worker:$SHA
 kubectl apply -f k8s
 
 #3. Imperatively set latest version on each deployment
-kubectl set image deployments/server-deployment server=stephengrider/multi-server #:$SHA
+kubectl set image deployments/server-deployment server=stephengrider/multi-server:latest #:$SHA
     #we are setting a specific image to the deployments and specifically
     #the deployment called server-deployment (which has been set on 
     #folder k8s in the file server-deployment in the metadata section in the 
     #name field) and then select the CONTAINER which name is server and
     #we tell it to use the image eumb602/multi-server (image that we have just uploaded)=>see 240 lecture
-kubectl set image deployments/client-deployment client=stephengrider/multi-client #:$SHA
-kubectl set image deployments/worker-deployment worker=stephengrider/multi-worker #:$SHA
+kubectl set image deployments/client-deployment client=stephengrider/multi-client:latest #:$SHA
+kubectl set image deployments/worker-deployment worker=stephengrider/multi-worker:latest #:$SHA

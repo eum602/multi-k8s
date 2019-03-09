@@ -15,7 +15,7 @@ spec: #customizing how this deplyment behaves
     spec: #customize the pod behaviour.
       containers: #can be more than one contaier        
         - name: server
-          image: eumb602/multi-server
+          image: stephengrider/multi-server
           ports:
             - containerPort: 5000 #this port is the port the service must reach in order to talk this pod
           env:
