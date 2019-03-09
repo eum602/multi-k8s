@@ -6,17 +6,17 @@ metadata:
                 #configuration  around the ingress object that gets created 
     kubernetes.io/ingress.class: nginx #telling kubernetes that we want to create an ingress controller
                                        #based on the nginx project.
-    nginx.ingress.kubernetes.io/rewrite-target: /$1 #/ #this is going to configure how the actual copy of nginx behaves
+    nginx.ingress.kubernetes.io/rewrite-target: / #this is going to configure how the actual copy of nginx behaves
                                                   #see more details in 218.
 spec:
   rules:
     - http:
         paths: #adding two possible paths( / and /api/)
-          - path: /?(.*) #/ #if some trafic comes into / 
+          - path: / #if some trafic comes into / 
             backend: #means send to=>
               serviceName: client-cluster-ip-service #making reference to the name of the cluster service of the client.
               servicePort: 3000 #this is the ...??
-          - path: /api/?(.*) #/api/
+          - path: /api/
             backend:
               serviceName: server-cluster-ip-service
               servicePort: 5000
