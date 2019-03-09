@@ -3,22 +3,20 @@ kind: Deployment
 metadata:
   name: client-deployment
 spec:
-  replicas: 3 #three replicas of the multiclient pod
+  replicas: 3
   selector:
     matchLabels:
-      component: web #the component of our app, that the Deployment object is going to be mention is the
-                      #web or frontend... the Deployment is going to identify a specific pod 
-                      #by refering this selector
-  template: #refers to the configuration of the pods
+      component: web
+  template:
     metadata:
       labels:
-        component: web #this label will identify this particular pod.
+        component: web
     spec:
-      containers: #now specifying all the different containers that are going to run inside this pod.
+      containers:
         - name: client
           image: eumb602/multi-client
           ports:
-            - containerPort: 3000 #port mapped to this multi-client image
+            - containerPort: 3000
             
 
 

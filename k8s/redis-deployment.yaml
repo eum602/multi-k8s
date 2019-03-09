@@ -11,10 +11,10 @@ spec:
     metadata:
       labels:
         component: redis
-    spec: #pod spec
+    spec:
       containers:
         - name: redis
-          image: redis #public official redis image
+          image: redis
           ports:
             - containerPort: 6379
 

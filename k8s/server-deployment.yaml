@@ -2,49 +2,37 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: server-deployment
-spec: #customizing how this deplyment behaves
-  replicas: 3 #number of pods; for example three pods
-  selector: #selector that deployment is going to use defined in the set of pods we are going to control
+spec:
+  replicas: 3
+  selector:
     matchLabels:
-      component: server #this can be anything, but we are putting component:server so we can clearly know 
-                        #what are we linking to.
-  template: #specifying the pod template
+      component: server
+  template:
     metadata:
       labels:
-        component: server #can be more than one label but it must at  least coincide the matchlabel above.
-    spec: #customize the pod behaviour.
-      containers: #can be more than one contaier        
+        component: server
+    spec:
+      containers:
         - name: server
           image: eumb602/multi-server
           ports:
-            - containerPort: 5000 #this port is the port the service must reach in order to talk this pod
+            - containerPort: 5000
           env:
             - name: REDIS_HOST
               value: redis-cluster-ip-service
             - name: REDIS_PORT
-              value: '6379' #the environment variables must be strings
+              value: '6379'
             - name: PGUSER
-              value: postgres #this is the dafault user of postgres; in a more seriousproduction we can set yhis up.
+              value: postgres
             - name: PGHOST
               value: postgres-cluster-ip-service
-            - name: PGPORT #pointing to the postgres-cluster-ip in the spec - ports section
-              value: '5432' #value of targetPort; #the environment variables must be strings
+            - name: PGPORT
+              value: '5432'
             - name: PGDATABASE
-              value: postgres #using the default postgres database.
-            - name: PGPASSWORD #the name of the environment variable, this is how our secret or encoded pawword is 
-                                #gonna show upthe container, this is not related to th secret, so it can be anything
-                                #else like MYPASSWORD or wathever; but in our case our multi-server image is going to be
-                                #looking for a PGPASSWORD environment variable so that is why we are going to specifically
-                                #be using PGPASSWORD as the name.
-              valueFrom: #we are essebtially saying get he value for the PGPASSWORD environment variable from some 
-                          #some configuration that we are going to put in here.
-                secretKeyRef: 
-                  name: pgpassword #this is the name of the secret object we imperatively defined when used the command
-                                          # kubectl create secret generic pgpassword --from-literal PGPASSWORD=123 
-                  key: PGPASSWORD #the key defined when used kubectl create secret ...... PGPASSWORD = 123; 
-                                  #when we create imperatively the secret we could have used any other 
-                                  #key and not necessarily PGPASSWORD, in that case we simply call that 
-                                  #key here with the exact key name we created imperatively.
-
-            
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
 

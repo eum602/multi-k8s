@@ -1,61 +1,27 @@
-sudo: required #because we are making use of docker
+sudo: required
 services:
-  - docker: #docker service must be pre installed as soon as we try to run our build.
-            #because we definitely need travis to build our images and even run test container.
+  - docker
 env:
   global:
-    - SHA=$(git rev-parse HEAD) #see lecture 241 and 242;  getting the GIT_SHA associated with the last commit
-    - CLOUDSDK_CORE_DISABLE_PROMPTS=1 #it is just going to configure google cloud CLI(gcloud)
-          #to make sure this not try to display any prompts that require user inputs; so when we run the command
-          #listed bellow(gcloud auth activate-service-account --key-file service-account.json) then it wont show any warning prompt
-          #like "are you sure you want to do this?" ot rhing like that.
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
   - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
-  - curl https://sdk.cloud.google.com | bash > /dev/null; #this download google cloud sdk and then install it locally
-                                                          #on a little instance that is assigned to us by travis.CI
-  - source $HOME/google-cloud-sdk/path.bash.inc #this looks at the default install directory(HOME/google-cloud-sdk)
-                                                #and the is going to source the file(path.bash.inc), this means
-                                                #essentially that just means that there is some configuration
-                                                #that is going to modify our shell inside of travisCI inside 
-                                                #the file(path.bash.inc) and then we are going to apply that 
-                                                #additional configuration through the source command.
-  - gcloud components update kubectl #now making sure that the google cloud or the CLI has also installed the kubectl command.
-                                      #so this command is updating or installing the kubectl command
-  - gcloud auth activate-service-account --key-file service-account.json #similar when we created an IAM user
-      #in AWS and we assigned it some number of permissions that essentially allow that kind of user that we made use of 
-      #travisCI to actually access or copy to elastic beanstalk and do a deployment at some point. In the 
-      #same wway "activate-service-account" is essentially equivalent to that entirely IAM system; so in order to
-      #tell google cloud who we are and give it access to our account then we have to activate a service-account
-      #and then provide a set of credentialsinside of a file that we are calling  "service-account.json"
-  - gcloud config set project multi-k8s-233719 #this is the real project name of multi-k8s (see lecture 237)
-                                              #with that we are telling GC what project to use.
-  - gcloud config set compute/zone us-central1-a	#now specifying the compute zone, GC similar to AWS has different data centers around the world;
-      #so we must indicate our default data center, this can be found on our kubernetes project (lecture 237)
-  - gcloud container clusters get-credentials multi-cluster #we are telling google cloud command to reach at the
-      #multi-cluster and configure to work specifically to that cluster; this is done in order to tell
-      #gcloud command exaclty what cluster it needs to be working with if we issue any set f kubernetes related commands.
-  ##That is all the configuration we need to set in order to use gcloud command. In the future we can use gcloud
-  #and kubectl as well to essentially update our cluster from a script that we put inside of this file or anywhere
-  #inside of our project.
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin #login into Docker
-    #we are using the docker command because we have access to docker as a service inside this yml file (see line servicer: docker
-    #-u stands for username ; --password-stdin indicates the password will be emited over standard in, into this command.
-    #this command assumes that we have set up environmet variables DOCKER_PASSWORD and DOCKER_USERNAME on our travis dashboard(lecture 238)
-    
-    ##building the test version of the multi-client
-  - docker build -t eumb602/react-test -f ./client/Dockerfile.dev ./client #we are using this Dockerfiel.dev because that has all the
-        #dependencies to run our test.
-        #-t eumb602/rect-test is a termporary tag to identify the image we are cereating
-        #./client is the build context.
-script:
-  - docker run eumb602/react-test npm test -- --coverage #running our test image
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project multi-k8s-233719
+  - gcloud config set compute/zone us-central1-a
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t eumb602/react-test -f ./client/Dockerfile.dev ./client
 
-deploy: #travis does not have similar built-in provider for deploying code off to a kubernetes cluster . 
-        #If we want to deploy to kubernetes we have to put together our own custom series of commands and tell
-        #travis which commands to run for us. 
-  provider: script #in AWS we used elasticbeanstalk; now we use our own script to deploy to kubernetes GC
-  script: bash ./deploy.sh #which script must travis have to take and execute.
-            #into the deploy.sh  we will build our images, apply config in the k8s folder and imperatively set latest images
-            #on each deployment
+script:
+  - docker run eumb602/react-test npm test -- --coverage
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
   on:
-    branch: master #only we will run all of this from brach master.
+    branch: master

@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       component: postgres
-  template: #pod template
+  template:
     metadata:
       labels:
         component: postgres
@@ -21,26 +21,15 @@ spec:
           image: postgres
           ports:
             - containerPort: 5432
-          volumeMounts: #this refers that is here where I want to use the storage claimed in volumes
-            - name: postgres-storage #this is identical to the volume name specified lines above, so
-                                      #we are using the volume we asked kubernetes.
-              mountPath: /var/lib/postgresql/data #where inside the container this storage will be made available, so anything I put inside
-                          #this location inside the container thenit will be stored inside of our volume.
-              subPath: postgres #this additonal little option is only for postgres; in general for other
-                                #applications mountPath may be enough, 
-                                #this key(subpath) value(postgres) means that any data inside the container that stored 
-                                #the mountPath is going to be stored inside of a folder called 
-                                #postgress(value) which is inside of the actual persistent volume claim.
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
           env:
-            - name: PGPASSWORD #the environment name we are going to pass into the container.
-                              #if the container (image postgres) sees an environment variable called PGPASSWORD
-                              #then it is going to use that as the password as supposed to be the default password 
-              valueFrom: 
+            - name: PGPASSWORD
+              valueFrom:
                 secretKeyRef:
                   name: pgpassword
-                  key: PGPASSWORD  #so now we have set up our custom password for our database.
-
-
-                                
+                  key: PGPASSWORD                              
 
 
