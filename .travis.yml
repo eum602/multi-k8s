@@ -1,6 +1,6 @@
 sudo: required #because we are making use of docker
 services:
-  - docker: #docker service must be pre installed as soon as we try to run our build.
+  - docker #docker service must be pre installed as soon as we try to run our build.
             #because we definitely need travis to build our images and even run test container.
 env:
   global:
