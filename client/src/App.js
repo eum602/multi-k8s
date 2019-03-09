@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
-import Fib from './fib';
-import otherPage from './otherPage';
+import Fib from './Fib';
+import OtherPage from './OtherPage';
 
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
           </header>
           <div>
             <Route exact path="/" component = {Fib}/>
-            <Route path="/otherpage" component={otherPage}/>
+            <Route path="/otherpage" component={OtherPage}/>
           </div>
         </div>
       </Router>
