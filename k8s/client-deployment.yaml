@@ -16,7 +16,7 @@ spec:
     spec:
       containers: #now specifying all the different containers that are going to run inside this pod.
         - name: client
-          image: eumb602/multi-client
+          image: stephengrider/multi-client
           ports:
             - containerPort: 3000 #port mapped to this multi-client image
             

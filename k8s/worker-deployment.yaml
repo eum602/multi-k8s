@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: eumb602/multi-worker #stephengrider/multi-worker
+          image: stephengrider/multi-worker #stephengrider/multi-worker
           env: #setting the necessary environment variables
             - name: REDIS_HOST #refers to the name of the environment variable.
               value: redis-cluster-ip-service #cluster associated to the pod that host the redis container
