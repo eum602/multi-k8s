@@ -1,0 +1,27 @@
+apiVersion: certmanager.k8s.io/v1alpha1 #bucket of different object types that we can pull from.
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod #purpose of this issuer is to tell our cert manager to reach out to LetsEncrypt
+        #and specifically the production versionof LetsEncrypt
+spec:
+  acme: 
+    server: https://acme-v02.api.letsencrypt.org/directory #that cert manager should reach out to and 
+                                              #try to establish this verification process(lecture 260)
+    email: "erick.pacheco.p@uni.pe" #email is not used as part of this verification process, just LetsEncrypt want to have
+              #thatemail just for other purposes they decide
+    privateKeySecretRef: #this is not at all connected to the secret that is generated as part of the
+                          #of the certificate. Behind the scenes when kubernetes is going to communicate
+                          #with LetsEncrypt during this process at some stage LetsEncrypt sends over a 
+                          #little secret key that is tied to essentially your record with LetsEncrypt.
+                          #And it actually comes into play and respond to LetsEncrypt when this tries to
+                          #access the randomly generated url(lecture 261 issuer config file).                          
+      name: letsencrypt-prod #Theliitle key that gets send back to us is stored inside of this secretKeyRef
+                              #this is not something we are ever going to use, so essentiall we can thrown it 
+                              #and forget about it.
+    http01: {} #this option is saying we want to use the http process of obtaining a certificate:
+                #1. reach out LetsEncrypt
+                #2. LetsEncrypt says ok respond on this route
+                #3. We respond
+                #Actually the is another way to obtain a certificate or going to this verification
+                #process  that is a little bit different of the http01, but http01 is a lot easier.
+                

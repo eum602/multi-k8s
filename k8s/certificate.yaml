@@ -1,0 +1,32 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: k8s-multi-ddns.net-tls #this is a tls certificate.
+spec:
+  secretName: k8s-multi-ddns.net #this secret name is specifying where our certificate 
+                            #should be stored after is obtained by cert manger, so this is
+                            #a little secret that is created as a part of the certificate.
+                            # this secret is created automatically cert manager obtains the secret
+  issuerRef: 
+    name: letsencrypt-prod #this is a reference to a issuer that we set up and want to use in order to obtain
+            #the certificate, so four us the certificate issuer is going to be letsencrypt-prod defined
+            #in the issuer.yaml -metadata -name section.
+    kind: ClusterIssuer #type of issuer defined in issuer.yaml
+  commonName: k8s-multi.ddns.net #the hostname and the domain name. #this common name is going to
+                            #be put on certificate in bold letters saying this certificate  is good for
+                            #any address of k8s-multi.ddns.com or whatever your domain name is(see lecture 262)
+  dnsNames: #array of list of the different domains that should associated with the certificate
+            #in other words when we get back a certificate that is going to be good for the list that
+            #appears here.
+    - k8s-multi #your domain name
+    # here should be going the www version (see lectire 262 cert config file) => www.k8s-muñti.com
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains: #here we list the same domains lised before, these are the different domains that the
+                # verification process (http01 process)is going to attempt to access to make sure
+                #that we actually have access to the listed domain names
+          - k8s-multi.ddns.net
+          #here again should go www.k8s-multi.ddns.net
+           
