@@ -8,9 +8,30 @@ metadata:
                                        #based on the nginx project.
     nginx.ingress.kubernetes.io/rewrite-target: /$1 #/ #this is going to configure how the actual copy of nginx behaves
                                                   #see more details in 218.
+    certmanager.k8s.io/cluster-issuer: 'letsencrypt-prod' #***this configuration here is going to infor 
+                                            #ingress service that we are going to make in use of
+                                            #letsencrypt certificate; that name is defined in issuer.yanl
+                                            #in metadata-name
+                                            #this is gonna make a little change to the nginx server 
+                                            #so nginx can expect a certificate from the issuer "letsencrypt-prod"
+
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true' #***make usre that the nginx server always forces users to make use of 
+                                            #https traffic  so we do not want any users accidentally going to
+                                            #the http version of our website because that is not a secure connection
+                                            #true must be go into a string
+
 spec:
+  tls: #***
+    - hosts:
+        - k8s-multi.ddns.net
+        #here I can also add the www.multi-k8s.com 
+        secretName: k8s-multi-ddns.net #this is the secret where we are storing the certificate, 
+                    #that secret name is defined in certificate.yaml in the spec - name section
+
   rules:
-    - http:
+    - host: k8s-multi.ddns.net #this essentially is saying that if something comes to
+                                #k8s-multi.ddns.net  the the rules below must be applied to that request.
+      http:
         paths: #adding two possible paths( / and /api/)
           - path: /?(.*) #if some trafic comes into / 
             backend: #means send to=>
@@ -20,3 +41,15 @@ spec:
             backend:
               serviceName: server-cluster-ip-service
               servicePort: 5000
+
+    # - host: www.k8s-multi.com #if I had a CNAME with www the this rule aplies to traffic comming from that.
+    #   http:
+    #     paths:
+    #       - path: /?(.*)
+    #         backend:
+    #           serviceName: client-cluster-ip-service
+    #           servicePort: 3000
+    #       - path: /api/?(.*)
+    #         backend:
+    #           serviceName: server-cluster-ip-service
+    #           servicePort: 5000
