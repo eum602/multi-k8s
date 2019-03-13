@@ -24,9 +24,9 @@ spec:
   tls: #***
     - hosts:
         - k8s-multi.ddns.net
-        #here I can also add the www.multi-k8s.com 
-        secretName: k8s-multi-ddns.net #this is the secret where we are storing the certificate, 
-                    #that secret name is defined in certificate.yaml in the spec - name section
+          #here I can also add the www.multi-k8s.com 
+      secretName: k8s-multi-ddns.net #this is the secret where we are storing the certificate, 
+                  #that secret name is defined in certificate.yaml in the spec - name section
 
   rules:
     - host: k8s-multi.ddns.net #this essentially is saying that if something comes to
